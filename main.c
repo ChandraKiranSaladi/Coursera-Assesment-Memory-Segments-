@@ -23,19 +23,20 @@
 #include <stdlib.h>
 #include "misc.h"
 
-static int g1;
-const int g2 = 45;
-char g3 = 12;
-char g4 = 0;
-extern char g5[N];
+static int g1;  // .bss , 4 bytes
+const int g2 = 45; // code--> .const 4 bytes
+char g3 = 12; // .data 1 byte at run time, before stores at .cinit or .pinit
+char g4 = 0;  // .bss
+extern char g5[N];  // N = 10U , 5 bytes. .bss
 
 int main()
 {
-  register int l1;
-  int * l2;
-  volatile int l3 = 12;
+  register int l1; // Where is it stored? In .bss or in CPu registers?
+  int * l2;  // stack, 2 bytes. 
+  volatile int l3 = 12; // volatile is used when we map with the hardware. Volatile tells the compiler not to 
+			// optimize anything that has to do with the volatile variable.
   
-  l2 = (int *) malloc( N * g2 * sizeof(char) );
+  l2 = (int *) malloc( N * g2 * sizeof(char) );  // 10U * 45 * 4 = 1800
 
   if ( ! l2 )
   {
